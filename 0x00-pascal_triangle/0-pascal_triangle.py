@@ -13,6 +13,6 @@ def pascal_triangle(n):
             if j == 0 or j == i:
                 temp.append(1)
             else:
-                temp.append(array[i-1][j-1] + array[i-1][j])
+                temp.append(array[i - 1][j - 1] + array[i - 1][j])
         array.append(temp)
     return array
