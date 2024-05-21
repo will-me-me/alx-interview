@@ -13,30 +13,34 @@ def validUTF8(data):
     :return: The function `validUTF8` returns a boolean value - `True` if the input `data` is a valid
     UTF-8 encoding, and `False` otherwise.
     """
-    n = len(data)
-    i = 0
+    number_bytes = 0
 
-    while i < n:
-        byte = data[i]
+    mask_1 = 1 << 7
+    mask_2 = 1 << 6
 
-        if (byte >> 3) == 0b11110:
-            num_bytes = 4
-        elif (byte >> 4) == 0b1110:
-            num_bytes = 3
-        elif (byte >> 5) == 0b110:
-            num_bytes = 2
-        elif (byte >> 7) == 0b0:
-            num_bytes = 1
-        else:
-            return False
+    for i in data:
 
-        if i + num_bytes > n:
-            return False
+        mask_byte = 1 << 7
 
-        for j in range(1, num_bytes):
-            if (data[i + j] >> 6) != 0b10:
+        if number_bytes == 0:
+
+            while mask_byte & i:
+                number_bytes += 1
+                mask_byte = mask_byte >> 1
+
+            if number_bytes == 0:
+                continue
+
+            if number_bytes == 1 or number_bytes > 4:
                 return False
 
-        i += num_bytes
+        else:
+            if not (i & mask_1 and not (i & mask_2)):
+                    return False
 
-    return True
+        number_bytes -= 1
+
+    if number_bytes == 0:
+        return True
+
+    return False
